@@ -12,7 +12,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 // Scene == Container holding scenes , cameras and lights
 const scene = new THREE.Scene();
 
-// first argument is field of view
 const camera = new THREE.PerspectiveCamera(
 	75,
 	window.innerWidth / window.innerHeight,
@@ -20,23 +19,15 @@ const camera = new THREE.PerspectiveCamera(
 	1000
 );
 
-//! RENDERER
-
-//renderer needs to know what DOM-element to use i.e the canvas in our case
 const renderer = new THREE.WebGLRenderer({
 	canvas: document.querySelector("#bg"),
 });
-//once instantiated we can se set the pixelRatio to the browsers pixel ratio
+
 renderer.setPixelRatio(window.devicePixelRatio);
-//make it a full screen by setting it to the browsers width & height
 renderer.setSize(window.innerWidth, window.innerHeight);
-//to move the camera , we can use the position method , which will alow us to have a better perspective
-// when we start adding shapes
 camera.position.setZ(30);
 camera.position.setX(-3);
 
-//finally we call the render method from the renderer and give it scene and camera as arguments.
-//this will generate an empty scene
 renderer.render(scene, camera);
 
 //! TORUS-OBJECT
@@ -55,6 +46,19 @@ const torus = new THREE.Mesh(geometry, material);
 
 //Then we add the torus-object that we have defined into the scene
 scene.add(torus);
+
+//! LIGHTING
+
+// using MeshBasicMaterial , we can create an object without a lightsource,
+// however if we want to use a MeshStandardMaterial, then we also need to create a lightsource.
+// we can position the lightsource through the poisition.set method
+// as with the object , we also need to add it to the scene once we have defined it
+const pointLight = new THREE.PointLight(0xffffff);
+pointLight.position.set(5, 5, 5);
+
+//if we want lightnining accross the entire scene , we can the create an ambient light
+const ambientLight = new THREE.AmbientLight(0xffffff);
+scene.add(ambientLight, pointLight);
 
 //! TEXTURE MAPPING
 
@@ -78,20 +82,6 @@ const moon = new THREE.Mesh(
 moon.position.set(20, 20, 20);
 
 scene.add(moon);
-
-//! LIGHTING
-
-// using MeshBasicMaterial , we can create an object without a lightsource,
-// however if we want to use a MeshStandardMaterial, then we also need to create a lightsource.
-// we can position the lightsource through the poisition.set method
-// as with the object , we also need to add it to the scene once we have defined it
-const pointLight = new THREE.PointLight(0xfffff);
-pointLight.position.set(5, 5, 5);
-scene.add(pointLight);
-
-//if we want lightnining accross the entire scene , we can the create an ambient light
-const ambientLight = new THREE.AmbientLight(0xfffff);
-scene.add(ambientLight);
 
 //since lighting can be a bit complicated, three.js offers some help:
 // const lightHelper = new THREE.PointLightHelper(pointLight);
@@ -132,7 +122,7 @@ scene.background = spaceTexture;
 
 //! CAMERA
 
-const moveCamera = () => {
+function moveCamera() {
 	const t = document.body.getBoundingClientRect().top;
 	moon.rotation.x += 0.05;
 	moon.rotation.y += 0.075;
@@ -144,9 +134,9 @@ const moveCamera = () => {
 	camera.position.z = t * -0.01;
 	camera.position.x = t * -0.0002;
 	camera.position.y = t * -0.0002;
-};
+}
 
-document.body.onScroll = moveCamera;
+document.body.onscroll = moveCamera;
 moveCamera();
 
 //! ANIMATION LOOP / GAME LOOP
