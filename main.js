@@ -1,6 +1,6 @@
 import "./style.css";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 //! MAIN CONFIGURATION & SETUP
 
@@ -25,8 +25,8 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(30);
-camera.position.setX(-3);
+camera.position.setZ(-100);
+camera.position.setX(-0);
 
 renderer.render(scene, camera);
 
@@ -62,26 +62,39 @@ scene.add(ambientLight, pointLight);
 
 //! TEXTURE MAPPING
 
-const jupiterTexture = new THREE.TextureLoader().load("jupitermap.jpg");
+// const emilTexture = new THREE.TextureLoader().load("emilmap.jpg");
 
-const jupiter = new THREE.Mesh(
-	new THREE.SphereGeometry(5, 32, 32),
-	new THREE.MeshBasicMaterial({ map: jupiterTexture })
+// const emil = new THREE.Mesh(
+// 	new THREE.SphereGeometry(5, 32, 32),
+// 	new THREE.MeshBasicMaterial({ map: emilTexture })
+// );
+
+// scene.add(emil);
+
+const emilTexture = new THREE.TextureLoader().load("./images/emil.jpg");
+
+const emil = new THREE.Mesh(
+	new THREE.BoxGeometry(2.5, 2.5, 2.5),
+	new THREE.MeshBasicMaterial({ map: emilTexture })
 );
 
-scene.add(jupiter);
+scene.add(emil);
 
-const moonTexture = new THREE.TextureLoader().load("moon.jpg");
-const normalTexture = new THREE.TextureLoader().load("normal.jpeg");
+emil.position.z = -5;
+emil.position.x = 2;
+
+const moonTexture = new THREE.TextureLoader().load("./images/moon.jpg");
+const normalTexture = new THREE.TextureLoader().load("./images/normal.jpeg");
 
 const moon = new THREE.Mesh(
 	new THREE.SphereGeometry(5.05, 32, 32),
 	new THREE.MeshStandardMaterial({ map: moonTexture, normalMap: normalTexture })
 );
 
-moon.position.set(20, 20, 20);
-
 scene.add(moon);
+
+moon.position.z = 30;
+moon.position.setX(-10);
 
 //since lighting can be a bit complicated, three.js offers some help:
 // const lightHelper = new THREE.PointLightHelper(pointLight);
@@ -99,7 +112,7 @@ scene.add(moon);
 //within the scene
 
 function addStar() {
-	//TODO: Make sure to move the star-creation out of the function for better performance
+	//TODO: Move the star-creation out of the function
 	const geometry = new THREE.SphereGeometry(0.25, 24, 24);
 	const material = new THREE.MeshStandardMaterial({ color: "white" });
 	const star = new THREE.Mesh(geometry, material);
@@ -117,7 +130,7 @@ Array(200).fill().forEach(addStar);
 
 //! TEXTURE/BACKGROUND
 
-const spaceTexture = new THREE.TextureLoader().load("space.jpeg");
+const spaceTexture = new THREE.TextureLoader().load("./images/space.jpeg");
 scene.background = spaceTexture;
 
 //! CAMERA
@@ -128,8 +141,9 @@ function moveCamera() {
 	moon.rotation.y += 0.075;
 	moon.rotation.z += 0.05;
 
-	jupiter.rotation.y += 0.01;
-	jupiter.rotation.z += 0.01;
+	emil.rotation.y += 0.01;
+	emil.rotation.z += 0.01;
+	emil.rotation.x += 0.01;
 
 	camera.position.z = t * -0.01;
 	camera.position.x = t * -0.0002;
@@ -149,8 +163,6 @@ const animate = () => {
 	torus.rotation.x += 0.001;
 	torus.rotation.y += 0.005;
 	torus.rotation.z += 0.005;
-
-	jupiter.rotation.y += 0.001;
 
 	//we call the update-method to ensure that changes are reflected in the UI
 	// controls.update();
